@@ -1,0 +1,25 @@
+{
+	"name": "get_discord_access_token",
+	"version": "1.0.0",
+	"description": "Easily retrieve a Discord access token through OAuth2. Meant for testing, not for production.",
+	"main": "src/index.js",
+	"scripts": {
+		"test": "echo \"Error: no test specified\" && exit 1"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/splatterxl/get_discord_access_token.git"
+	},
+	"author": "",
+	"license": "AGPL-3.0-or-later",
+	"bugs": {
+		"url": "https://github.com/splatterxl/get_discord_access_token/issues"
+	},
+	"homepage": "https://github.com/splatterxl/get_discord_access_token#readme",
+	"dependencies": {
+		"@types/node": "^17.0.24",
+		"discord-api-types": "^0.31.1",
+		"fastify": "^3.28.0",
+		"undici": "^5.0.0"
+	}
+}
