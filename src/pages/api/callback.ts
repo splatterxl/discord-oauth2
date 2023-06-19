@@ -1,3 +1,4 @@
+import { APIUser } from 'discord-api-types/v10';
 import { NextApiRequest, NextApiResponse } from 'next';
 
 export default async function DiscordCallback(
@@ -40,7 +41,7 @@ export default async function DiscordCallback(
 				);
 		}
 
-		const userInfo = await getUserInfo(code);
+		const userInfo = await getToken(code);
 
 		return res.redirect(
 			`/success?data=${Buffer.from(JSON.stringify(userInfo)).toString(
@@ -56,7 +57,7 @@ export default async function DiscordCallback(
 	}
 }
 
-export const getUserInfo = async (code: string) => {
+export const getToken = async (code: string) => {
 	// const text = new URLSearchParams({
 	// 	client_id: process.env.CLIENT_ID!,
 	// 	client_secret: process.env.CLIENT_SECRET!,
@@ -86,7 +87,17 @@ export const getUserInfo = async (code: string) => {
 		return json;
 	});
 
-	const user = await fetch('https://discord.com/api/v10/users/@me', {
+	return { access, user: await getUser(access) };
+};
+
+export const getUser = (access: {
+	access_token: string;
+	expires_in: number;
+	refresh_token: string;
+	scope: string;
+	token_type: string;
+}): Promise<APIUser> => {
+	return fetch('https://discord.com/api/v10/users/@me', {
 		headers: {
 			Authorization: `${access.token_type} ${access.access_token}`
 		}
@@ -100,6 +111,4 @@ export const getUserInfo = async (code: string) => {
 
 		return json;
 	});
-
-	return { access, user };
 };

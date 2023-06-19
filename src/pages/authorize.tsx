@@ -14,6 +14,7 @@ export default function Home() {
 		]);
 
 	const [showSensitive, setSensitive] = useState(false);
+	const [overrideCC, setClientCreds] = useState(false);
 
 	return (
 		<div
@@ -44,7 +45,7 @@ export default function Home() {
 				</label>
 			</div>
 
-			<div className='mt-2 mb-4'>
+			<div className='mt-2'>
 				{OAuth2Scopes.map((scope) => {
 					if (
 						!scopes.includes(scope.name) &&
@@ -109,12 +110,30 @@ export default function Home() {
 				})}
 			</div>
 
+			<div className='flex items-center cursor-pointer mt-2 mb-4'>
+				<input
+					id='client_creds'
+					type='checkbox'
+					checked={overrideCC}
+					onChange={(event) => {
+						setClientCreds(event.target.checked);
+					}}
+					className='cursor-pointer w-4 h-4 text-blue-600 rounded focus:ring-blue-600 ring-offset-gray-800 focus:ring-2 bg-gray-700 border-gray-600'
+				/>
+				<label
+					htmlFor='client_creds'
+					className='cursor-pointer ml-2 text-md font-medium pb-0.5 text-gray-400'
+				>
+					override use client_credentials
+				</label>
+			</div>
+
 			<Link
 				href={{
 					pathname: '/api/authorize',
-					query: { scopes }
+					query: { scopes, client_creds: overrideCC ? 'override' : false }
 				}}
-				className='pb-12 -mt-1 w-0'
+				className='-mt-1 w-0 pb-12 '
 			>
 				<button className='bg-transparent text-slate-400 font-semibold hover:text-slate-300 py-2 px-4 border border-slate-500 hover:border-slate-400 rounded'>
 					Authorize

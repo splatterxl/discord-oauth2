@@ -1,5 +1,5 @@
 import { NextApiRequest, NextApiResponse } from 'next';
-import { getUserInfo } from './callback';
+import { getToken, getUser } from './callback';
 
 export default async function ClientCreds(
 	req: NextApiRequest,
@@ -18,7 +18,7 @@ export default async function ClientCreds(
 		const {
 			user: user,
 			access: { access_token, refresh_token }
-		} = await getUserInfo(code);
+		} = await getToken(code);
 
 		if (
 			!process.env.CLIENT_OWNER ||
@@ -32,9 +32,9 @@ export default async function ClientCreds(
 		const access = await clientCredentials(scopes);
 
 		return res.redirect(
-			`/success?data=${Buffer.from(JSON.stringify({ user, access })).toString(
-				'base64url'
-			)}`
+			`/success?data=${Buffer.from(
+				JSON.stringify({ user: await getUser(access), access })
+			).toString('base64url')}`
 		);
 	} catch (err: any) {
 		return res.redirect(

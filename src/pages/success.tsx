@@ -80,10 +80,14 @@ export default function Success({
 					{show ? access.access_token : '*'.repeat(access.access_token.length)}
 				</code>
 				<br />
-				Refresh token:{' '}
-				<code className='p-1 bg-slate-700 rounded-md'>
-					{access.refresh_token}
-				</code>
+				{access.refresh_token ? (
+					<>
+						Refresh token:{' '}
+						<code className='p-1 bg-slate-700 rounded-md'>
+							{access.refresh_token}
+						</code>
+					</>
+				) : null}
 			</p>
 		</div>
 	);
