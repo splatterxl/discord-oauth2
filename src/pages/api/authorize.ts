@@ -4,7 +4,12 @@ export default async function Authorize(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { scopes: query, client_creds: cq } = req.query;
+	const {
+		scopes: query,
+		client_creds: cq,
+		client_id,
+		client_secret
+	} = req.query;
 
 	const scopes = Array.isArray(query) ? query : query ? [query] : [];
 
@@ -77,7 +82,9 @@ export default async function Authorize(
 				: 'code',
 			state: client_creds
 				? Buffer.from(
-						`client_creds:${scopes.concat(['identify']).join(',')}`
+						`client_creds:${scopes
+							.concat(['identify'])
+							.join(',')}:${client_id}+${client_secret}`
 				  ).toString('base64')
 				: '',
 			prompt: 'none',

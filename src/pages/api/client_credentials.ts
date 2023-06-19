@@ -5,7 +5,7 @@ export default async function ClientCreds(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { code, scope } = req.query;
+	const { code, scope, client_id, client_secret } = req.query;
 
 	if (!code || typeof code !== 'string')
 		return res.status(400).send({
@@ -29,7 +29,11 @@ export default async function ClientCreds(
 			throw 'AccessError[403]: invalid_grant';
 		}
 
-		const access = await clientCredentials(scopes);
+		const access = await clientCredentials(
+			scopes,
+			client_id?.toString(),
+			client_secret?.toString()
+		);
 
 		return res.redirect(
 			`/success?data=${Buffer.from(
@@ -59,12 +63,20 @@ export const deleteToken = async (token: string, refresh: string) => {
 	});
 };
 
-export const clientCredentials = async (scope: string[]) => {
+export const clientCredentials = async (
+	scope: string[],
+	client_id?: string,
+	client_secrets?: string
+) => {
 	const json = await fetch('https://discord.com/api/v10/oauth2/token', {
 		method: 'POST',
 		headers: {
 			'Content-Type': 'application/x-www-form-urlencoded',
-			Authorization: `Basic ${process.env.CLIENT_AUTH}`
+			Authorization: `Basic ${
+				client_id && client_secrets
+					? process.env.CLIENT_AUTH!
+					: Buffer.from(`${client_id}:${client_secrets}`).toString('base64')
+			}`
 		},
 		body: `grant_type=client_credentials&scope=${scope.join('%20')}`
 	}).then(async (res) => {

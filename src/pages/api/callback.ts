@@ -30,14 +30,18 @@ export default async function DiscordCallback(
 			const buf = state.toString();
 			const txt = Buffer.from(buf, 'base64').toString();
 
+			const [, scopes, credentials] = txt.split(':');
+			const [client_id, client_secret] = credentials.split('+');
+
 			if (txt.startsWith('client_creds:'))
 				return res.redirect(
 					`/api/client_credentials?${new URLSearchParams({
 						code
-					})}&scope=${txt
-						.replace(/^client_creds:/, '')
+					})}&scope=${scopes
 						.split(',')
-						.join('&scope=')}`
+						.join(
+							'&scope='
+						)}&client_id=${client_id}&client_secret=${client_secret}`
 				);
 		}
 
