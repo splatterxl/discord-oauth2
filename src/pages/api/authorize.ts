@@ -4,13 +4,13 @@ export default async function Authorize(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { scopes: query } = req.query;
+	const { scopes: query, client_creds: cq } = req.query;
 
 	const scopes = Array.isArray(query) ? query : query ? [query] : [];
 
-	let client_creds = scopes.some(
-		(v) => SCOPES.find((s) => s.name === v)?.client_creds
-	);
+	let client_creds =
+		cq === 'override' ||
+		scopes.some((v) => SCOPES.find((s) => s.name === v)?.client_creds);
 
 	if (scopes.some((v) => SCOPES.find((s) => s.name === v)?.rpc))
 		return res.status(400).send({
@@ -80,7 +80,8 @@ export default async function Authorize(
 						`client_creds:${scopes.concat(['identify']).join(',')}`
 				  ).toString('base64')
 				: '',
-			prompt: 'none'
+			prompt: 'none',
+			redirect_uri: process.env.CLIENT_REDIRECT!
 		})}`
 	);
 }
