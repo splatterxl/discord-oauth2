@@ -5,7 +5,7 @@ export default async function DiscordCallback(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { error, error_description, code, state } = Object.assign(
+	const { error, error_description, code, state, access_token: token, token_type, expires_in, scope } = Object.assign(
 		{},
 		req.query
 	);
@@ -20,7 +20,7 @@ export default async function DiscordCallback(
 			})}`
 		);
 
-	if (!code || typeof code !== 'string')
+	if ((!code || typeof code !== 'string') && (!token_type && !token))
 		return res.status(400).send({
 			code: 'This field is required.'
 		});
@@ -36,7 +36,11 @@ export default async function DiscordCallback(
 			if (txt.startsWith('client_creds:'))
 				return res.redirect(
 					`/api/client_credentials?${new URLSearchParams({
-						code
+						code,
+						token, 
+						token_type,
+						already_authorized: scope,
+						expires_in
 					})}&scope=${scopes
 						.split(',')
 						.join(

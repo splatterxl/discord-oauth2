@@ -5,9 +5,9 @@ export default async function ClientCreds(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { code, scope, client_id, client_secret } = req.query;
+	const { code, token, token_type, scope, already_authorized, expires_in, client_id, client_secret } = req.query;
 
-	if (!code || typeof code !== 'string')
+	if ((!code || typeof code !== 'string') && (!token && !token_type))
 		return res.status(400).send({
 			code: 'This field is required.'
 		});
@@ -18,7 +18,18 @@ export default async function ClientCreds(
 		const {
 			user: user,
 			access: { access_token, refresh_token }
-		} = await getToken(code);
+		} = !token ? await getToken(code) : {
+			user: getUser({
+				access_token: token,
+				token_type,
+				scope: already_authorized,
+				expires_in,
+			}),
+			access: {
+				access_token: token,
+				refresh_token: ""
+			}
+		};
 
 		if (
 			!process.env.CLIENT_OWNER ||

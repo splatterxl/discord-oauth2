@@ -172,8 +172,7 @@ export const SCOPES = [
 	{
 		name: 'voice',
 		description: 'connect to voice',
-		client_creds: false,
-		token: true
+		client_creds: true
 	}
 ] satisfies {
 	name: string;
