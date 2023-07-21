@@ -61,7 +61,7 @@ export default async function DiscordCallback(
 					user: getUser({
 						access_token: token,
 						token_type,
-						scope: already_authorized,
+						scope: scope,
 						expires_in
 					} as any),
 					access: {
