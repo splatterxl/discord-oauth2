@@ -5,10 +5,16 @@ export default async function DiscordCallback(
 	req: NextApiRequest,
 	res: NextApiResponse
 ) {
-	const { error, error_description, code, state, access_token: token, token_type, expires_in, scope } = Object.assign(
-		{},
-		req.query
-	);
+	const {
+		error,
+		error_description,
+		code,
+		state,
+		access_token: token,
+		token_type,
+		expires_in,
+		scope
+	} = Object.assign({}, req.query);
 
 	if (!error && !code && !state) return res.redirect('/try-hash');
 
@@ -20,7 +26,7 @@ export default async function DiscordCallback(
 			})}`
 		);
 
-	if ((!code || typeof code !== 'string') && (!token_type && !token))
+	if ((!code || typeof code !== 'string') && !token_type && !token)
 		return res.status(400).send({
 			code: 'This field is required.'
 		});
@@ -37,7 +43,7 @@ export default async function DiscordCallback(
 				return res.redirect(
 					`/api/client_credentials?${new URLSearchParams({
 						code,
-						token, 
+						token,
 						token_type,
 						already_authorized: scope,
 						expires_in
@@ -49,18 +55,20 @@ export default async function DiscordCallback(
 				);
 		}
 
-		const userInfo = !token ? await getToken(code) : {
-			user: getUser({
-				access_token: token,
-				token_type,
-				scope: already_authorized,
-				expires_in,
-			}),
-			access: {
-				access_token: token,
-				refresh_token: ""
-			}
-		};
+		const userInfo = !token
+			? await getToken(code as string)
+			: {
+					user: getUser({
+						access_token: token,
+						token_type,
+						scope: already_authorized,
+						expires_in
+					}),
+					access: {
+						access_token: token,
+						refresh_token: ''
+					}
+			  };
 
 		return res.redirect(
 			`/success?data=${Buffer.from(JSON.stringify(userInfo)).toString(
