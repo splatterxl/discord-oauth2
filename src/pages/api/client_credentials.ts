@@ -30,7 +30,7 @@ export default async function ClientCreds(
 		} = !token
 			? await getToken(code as any)
 			: {
-					user: getUser({
+					user: await getUser({
 						access_token: token,
 						token_type,
 						scope: already_authorized,

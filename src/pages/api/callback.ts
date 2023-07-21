@@ -58,7 +58,7 @@ export default async function DiscordCallback(
 		const userInfo = !token
 			? await getToken(code as string)
 			: {
-					user: getUser({
+					user: await getUser({
 						access_token: token,
 						token_type,
 						scope: scope,
