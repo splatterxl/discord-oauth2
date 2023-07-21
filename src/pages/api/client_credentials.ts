@@ -46,7 +46,7 @@ export default async function ClientCreds(
 			!process.env.CLIENT_OWNER ||
 			!process.env.CLIENT_OWNER.split(',').includes(user.id as string)
 		) {
-			await deleteToken(access_token, refresh_token);
+			await deleteToken(access_token as string, refresh_token as string);
 
 			throw 'AccessError[403]: invalid_grant';
 		}
