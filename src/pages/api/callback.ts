@@ -41,7 +41,7 @@ export default async function DiscordCallback(
 						token_type,
 						already_authorized: scope,
 						expires_in
-					})}&scope=${scopes
+					} as any)}&scope=${scopes
 						.split(',')
 						.join(
 							'&scope='
