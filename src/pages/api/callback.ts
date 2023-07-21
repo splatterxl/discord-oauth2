@@ -49,7 +49,18 @@ export default async function DiscordCallback(
 				);
 		}
 
-		const userInfo = await getToken(code);
+		const userInfo = !token ? await getToken(code) : {
+			user: getUser({
+				access_token: token,
+				token_type,
+				scope: already_authorized,
+				expires_in,
+			}),
+			access: {
+				access_token: token,
+				refresh_token: ""
+			}
+		};
 
 		return res.redirect(
 			`/success?data=${Buffer.from(JSON.stringify(userInfo)).toString(
