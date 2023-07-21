@@ -63,7 +63,7 @@ export default async function DiscordCallback(
 						token_type,
 						scope: already_authorized,
 						expires_in
-					}),
+					} as any),
 					access: {
 						access_token: token,
 						refresh_token: ''
