@@ -19,7 +19,7 @@ const App: NextPage<AppProps> = ({ Component, pageProps, router }) => {
 				>
 					<Image
 						alt='splt.dev'
-						src='https://splt.dev/assets/e0e3e0f61d042aa38595bc8e09f2b687c0ec519c.png'
+						src='https://splt.dev/assets/icon.png'
 						width={50}
 						height={50}
 						className='fixed top-0 left-0 m-4'
